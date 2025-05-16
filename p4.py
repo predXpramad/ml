@@ -1,24 +1,33 @@
 import csv
 
-# Load data
-with open('enjoysport.csv', 'r') as f:
-    data = list(csv.reader(f))
+# Load dataset
+data = []
+with open('enjoysport.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        data.append(row)
 
-print("=== Training Data ===")
-[print(r) for r in data]
-print("\nTotal training instances:", len(data))
+print("Training data:")
+for row in data:
+    print(row)
+
+print("\nTotal number of training instances:", len(data))
 
 # Initialize hypothesis
-n, hypo = len(data[0]) - 1, ['0'] * (len(data[0]) - 1)
-print("\nInitial Hypothesis:", hypo)
+num_attributes = len(data[0]) - 1
+hypothesis = ['0'] * num_attributes
 
-# Find-S Algorithm
-print("\n=== Hypothesis Updates ===")
-for i, row in enumerate(data):
-    if row[-1].lower() == 'yes':
-        for j in range(n):
-            hypo[j] = row[j] if hypo[j] in ['0', row[j]] else '?'
-        print(f"After instance {i+1}: {hypo}")
+print("\nInitial hypothesis:", hypothesis)
 
-print("\n=== Final Hypothesis ===")
-print("Maximally Specific Hypothesis:", hypo)
+# Apply Find-S algorithm
+for i in range(len(data)):
+    if data[i][-1].lower() == 'yes':
+        for j in range(num_attributes):
+            if hypothesis[j] == '0' or hypothesis[j] == data[i][j]:
+                hypothesis[j] = data[i][j]
+            else:
+                hypothesis[j] = '?'
+        print(f"\nHypothesis after instance {i+1}:", hypothesis)
+
+# Final result
+print("\nMaximally specific hypothesis:", hypothesis)
